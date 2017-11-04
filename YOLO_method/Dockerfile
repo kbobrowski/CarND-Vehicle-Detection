@@ -5,8 +5,6 @@ RUN mkdir -p /input \
     && apt-get install -y ffmpeg libav-tools \
     && pip3 install sk-video
 
-COPY yolo-vehicles.cfg yolo-vehicles_1000.weights /input/
-
 RUN apt-get install sudo
 
 RUN useradd --create-home --shell /bin/bash docker \
@@ -14,7 +12,7 @@ RUN useradd --create-home --shell /bin/bash docker \
     && adduser docker sudo
 
 
-COPY run_darkflow.py namesgenerator.py labels.txt default.sh /home/docker/
+COPY yolo-vehicles.cfg run_darkflow.py namesgenerator.py labels.txt default.sh /home/docker/
 
 RUN chown -R docker:docker /home/docker \
     && chmod +x /home/docker/default.sh

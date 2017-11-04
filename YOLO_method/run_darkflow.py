@@ -8,8 +8,9 @@ from time import time
 from skvideo.io import FFmpegWriter
 
 
-video = sys.argv[1]
-videoOut = sys.argv[2]
+weights = sys.argv[1]
+video = sys.argv[2]
+videoOut = sys.argv[3]
 
 def get_corners(center, size):
     xmin = center[0] - size[1]/2
@@ -123,6 +124,9 @@ def printProgressBar(iteration, total, prefix='', suffix='', decimals=1, length=
         print()
 
 
+if not os.path.isfile(weights):
+    print("No such weights file: {}".format(weights))
+    sys.exit(1)
 if not os.path.isfile(video):
     print("No such input file: {}".format(video))
     sys.exit(1)
@@ -134,7 +138,7 @@ shape = img.shape
 vidout = FFmpegWriter(videoOut)
 if not success: sys.exit(1)
         
-options = {'model': "/input/yolo-vehicles.cfg", 'load': "/input/yolo-vehicles_1000.weights", 'gpu': 0.85, 'threshold': 0.3}
+options = {'model': "/home/docker/yolo-vehicles.cfg", 'load': weights, 'gpu': 0.85, 'threshold': 0.3}
 
 tfnet = TFNet(options)
 i = 0
