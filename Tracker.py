@@ -1,16 +1,9 @@
 import sys, os, cv2
 import numpy as np
-sys.path.append('/darkflow')
-from darkflow.net.build import TFNet
 import namesgenerator
 import binascii
 from time import time
-from skvideo.io import FFmpegWriter
 
-
-weights = sys.argv[1]
-video = sys.argv[2]
-videoOut = sys.argv[3]
 
 def get_corners(center, size):
     xmin = center[0] - size[1]/2
@@ -101,91 +94,5 @@ class Tracker(object):
                 cv2.rectangle(src, p1, p2, (0,0,255), 5)
                 pfont = (p1[0], p1[1]-20)
                 cv2.putText(src, frame.name, pfont, cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,0,255), 2)
-        self.frames = [frame for frame in self.frames if frame.timeNotVisible < 20]
+        self.frames = [frame for frame in self.frames if frame.timeNotVisible < 30]
 
-def printProgressBar(iteration, total, prefix='', suffix='', decimals=1, length=100, fill='*'):
-    """
-    Call in a loop to create terminal progress bar
-    @params:
-        iteration   - Required  : current iteration (Int)
-        total       - Required  : total iterations (Int)
-        prefix      - Optional  : prefix string (Str)
-        suffix      - Optional  : suffix string (Str)
-        decimals    - Optional  : positive number of decimals in percent complete (Int)
-        length      - Optional  : character length of bar (Int)
-        fill        - Optional  : bar fill character (Str)
-    """
-    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
-    filledLength = int(length * iteration // total)
-    bar = fill * filledLength + '-' * (length - filledLength)
-    print('\r%s |%s| %s%% %s' % (prefix, bar, percent, suffix), end='\r')
-    # Print New Line on Complete
-    if iteration == total: 
-        print()
-
-
-if not os.path.isfile(weights):
-    print("No such weights file: {}".format(weights))
-    sys.exit(1)
-if not os.path.isfile(video):
-    print("No such input file: {}".format(video))
-    sys.exit(1)
-vidcap = cv2.VideoCapture(video)
-fcount = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT))
-fourcc = cv2.VideoWriter_fourcc(*'XVID')
-success, img = vidcap.read()
-shape = img.shape
-vidout = FFmpegWriter(videoOut)
-if not success: sys.exit(1)
-        
-options = {'model': "/home/docker/yolo-vehicles.cfg", 'load': weights, 'gpu': 0.85, 'threshold': 0.3}
-
-tfnet = TFNet(options)
-i = 0
-tracker = Tracker()
-fps_avg = []
-
-
-
-while True:
-    i+=1
-    t1 = time()
-    pred = tfnet.return_predict(img)
-    for p in pred:
-        label = p['label']
-        prob = p['confidence']
-        topleft = p['topleft']
-        bottomright = p['bottomright']
-        xmin = topleft['x']
-        ymin = topleft['y']
-        xmax = bottomright['x']
-        ymax = bottomright['y']
-        width = xmax-xmin
-        height = ymax-ymin
-        if height < 20: continue
-        if width < 20: continue
-        centerx = (xmin + xmax)/2
-        centery = (ymin + ymax)/2
-        p1 = (int(xmin), int(ymin))
-        p2 = (int(xmax), int(ymax))
-        frameimg = img[ymin:ymin+height, xmin:xmin+width, :]
-        tracker.new_object([centerx, centery], frameimg)
-        cv2.rectangle(img, p1, p2, (0,255,255), 1)
-    tracker.draw_frames(img)
-    t2 = time()
-    fps = 1/(t2-t1)
-    fps_avg.append(fps)
-    if len(fps_avg) > 200: fps_avg.pop(0)
-    fps_print = int(np.mean(fps_avg))
-    cv2.putText(img, "FPS: {}".format(fps_print), (50,50), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,255), 3)
-    vidout.writeFrame(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-    #cv2.imshow('img', img)
-    #print("\rFrame: {}, FPS: {}".format(i, int(np.mean(fps_avg))), end='\r')
-    printProgressBar(i, fcount, "Progress:", "({} FPS)".format(fps_print), length=20)
-    if cv2.waitKey(1) & 0xFF == ord('q'): break
-    success, img = vidcap.read()
-    if not success: break
-
-vidcap.release()
-vidout.close()
-cv2.destroyAllWindows()
