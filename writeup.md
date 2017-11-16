@@ -1,12 +1,12 @@
-** Vehicle Detection Project **
+# Vehicle Detection Project
 
-# Solution based on YOLO method
+## Solution based on YOLO method
 
 I have used alternative method for this project, based on YOLO, repository is [here](https://github.com/kbobrowski/YOLO-vehicle-detection). Video with a final result:
 
 [![video](https://img.youtube.com/vi/64bETGQ-tLk/0.jpg)](https://www.youtube.com/watch?v=64bETGQ-tLk)
 
-# Solution based on a classic approach
+## Solution based on a classic approach
 
 This repository and writeup file contains classic approach introduced in the lecture.
 
@@ -23,7 +23,7 @@ The goals / steps of this project are the following:
 [image1]: ./examples/car_not_car.png
 [image2]: ./examples/HOG_example.jpg
 [image3]: ./examples/sliding_windows.jpg
-[image4]: ./examples/sliding_window.jpg
+[image4]: ./examples/sliding_window.png
 [image5]: ./examples/bboxes_and_heat.png
 [image6]: ./examples/labels_map.png
 [image7]: ./examples/output_bboxes.png
