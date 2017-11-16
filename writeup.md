@@ -43,7 +43,7 @@ You're reading it!
 
 #### 1. Explain how (and identify where in your code) you extracted HOG features from the training images.
 
-The code for this step is contained in the `lesson_functions.py`. 
+The code for this step is contained in the `lesson_functions.py` (line 190). 
 
 I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
 
@@ -97,7 +97,8 @@ Here's a [link to my video result](./result.mp4)
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
 I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
-Furthermore, frame for each car is labeled and stabilized using Tracker class (`Tracker.py`). It attempts to stabilize both movement and size change of a frame, as well as preserve frame if there is short break in a detection. It also eliminates false positives by drawing a frame only after it is visible for set time. 
+
+Furthermore, frame for each car is labeled and stabilized using Tracker class (`Tracker.py`). It attempts to stabilize both movement and size change of a frame, as well as preserve frame if there is short break in a detection. It also eliminates false positives by drawing a frame only after it is visible for a set time. 
 
 ---
 
