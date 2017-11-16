@@ -4,7 +4,7 @@
 
 I have used alternative method for this project, based on YOLO, repository is [here](https://github.com/kbobrowski/YOLO-vehicle-detection). Final result:
 
-[[video](https://img.youtube.com/vi/64bETGQ-tLk/0.jpg)](https://www.youtube.com/watch?v=64bETGQ-tLk)
+[![video](https://img.youtube.com/vi/64bETGQ-tLk/0.jpg)](https://www.youtube.com/watch?v=64bETGQ-tLk)
 
 # Solution based on a classic approach
 
